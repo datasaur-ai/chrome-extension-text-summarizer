@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Chrome extension for text summarization",
   "scripts": {
-    "build": "webpack --config webpack.config.ts --mode production",
+    "build": "rm -rf ./dist && webpack --config webpack.config.ts --mode production",
     "dev": "rm -rf ./dist && webpack --config webpack.config.ts --mode development --watch",
     "analyze": "ANALYZE=true webpack --config webpack.config.ts --mode production",
     "type-check": "tsc --noEmit",
@@ -28,6 +28,7 @@
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
+    "dotenv": "^16.4.7",
     "eslint": "^9.21.0",
     "html-webpack-plugin": "^5.6.3",
     "identity-obj-proxy": "^3.0.0",

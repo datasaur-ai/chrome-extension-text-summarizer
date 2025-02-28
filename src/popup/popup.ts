@@ -39,7 +39,38 @@ class PopupManager extends Disposable {
     });
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     
+    // Add default link handler
+    const defaultLink = document.getElementById('useDefault');
+    if (defaultLink) {
+      if (process.env['DEFAULT_API_URL'] && process.env['DEFAULT_API_KEY']) {
+        defaultLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.useDefaultSettings();
+        });
+      } else {
+        defaultLink.remove();
+      }
+    }
+    
     this.loadSettings().catch(this.handleError.bind(this));
+  }
+
+  private async useDefaultSettings(): Promise<void> {
+    try {
+      const apiUrlInput = this.form.elements.namedItem('apiUrl') as HTMLInputElement;
+      const apiKeyInput = this.form.elements.namedItem('apiKey') as HTMLInputElement;
+
+      if (process.env['DEFAULT_API_URL'] && process.env['DEFAULT_API_KEY']) {
+        apiUrlInput.value = process.env['DEFAULT_API_URL'];
+        apiKeyInput.value = process.env['DEFAULT_API_KEY'];
+        await this.saveSettings();
+        this.showSuccess('Default settings applied successfully');
+      } else {
+        throw new Error('Default settings not available');
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   private async loadSettings(): Promise<void> {

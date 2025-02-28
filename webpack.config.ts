@@ -8,12 +8,16 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const config = (_env: { [key: string]: string }, argv: { mode: string }): webpack.Configuration => {
   const isDevelopment = argv.mode === 'development';
+
+  // Load from .env file
+  dotenv.config();
 
   return {
     entry: {
@@ -45,7 +49,12 @@ const config = (_env: { [key: string]: string }, argv: { mode: string }): webpac
         {
           test: /\.scss$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                publicPath: '',
+              }
+            },
             {
               loader: 'css-loader',
               options: {
@@ -119,7 +128,7 @@ const config = (_env: { [key: string]: string }, argv: { mode: string }): webpac
         minify: !isDevelopment,
       }),
       new MiniCssExtractPlugin({
-        filename: isDevelopment ? '[name].css' : '[name].[contenthash].css',
+        filename: '[name].css',
       }),
       new CopyPlugin({
         patterns: [
@@ -147,6 +156,10 @@ const config = (_env: { [key: string]: string }, argv: { mode: string }): webpac
       }),
       ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
       ...(process.env['ANALYZE'] ? [new BundleAnalyzerPlugin()] : []),
+      new webpack.DefinePlugin({
+        'process.env.DEFAULT_API_KEY': JSON.stringify(process.env['DEFAULT_API_KEY']),
+        'process.env.DEFAULT_API_URL': JSON.stringify(process.env['DEFAULT_API_URL']),
+      }),
     ],
     performance: {
       hints: isDevelopment ? false : 'warning',
