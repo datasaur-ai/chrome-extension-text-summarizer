@@ -32,9 +32,13 @@ class PopupManager extends Disposable {
   }
 
   private initialize(): void {
-    this._register(
-      this.form.addEventListener('submit', (e) => this.handleSubmit(e))
-    );
+    this._register({
+      dispose: () => {
+        this.form.removeEventListener('submit', this.handleSubmit);
+      }
+    });
+    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+    
     this.loadSettings().catch(this.handleError.bind(this));
   }
 

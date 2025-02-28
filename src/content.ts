@@ -79,23 +79,34 @@ class ContentScript extends Disposable {
       color: #333;
     `;
 
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    const copyButton = document.createElement('button');
+    copyButton.className = 'action-button copy-button';
+    copyButton.title = 'Copy to clipboard';
+    copyButton.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="copy-feedback"></span>
+    `;
+
     const closeButton = document.createElement('button');
-    closeButton.className = 'close-button';
-    closeButton.textContent = '×';
-    closeButton.style.cssText = `
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      border: none;
-      background: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #666;
-      padding: 4px 8px;
+    closeButton.className = 'action-button close-button';
+    closeButton.title = 'Close';
+    closeButton.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18"></path>
+        <path d="M6 6l12 12"></path>
+      </svg>
     `;
     closeButton.addEventListener('click', () => this.removePopup(popup));
 
-    popup.appendChild(closeButton);
+    buttonContainer.appendChild(copyButton);
+    buttonContainer.appendChild(closeButton);
+    popup.appendChild(buttonContainer);
     this.popups.add(popup);
     
     return popup;
@@ -104,13 +115,24 @@ class ContentScript extends Disposable {
   private showSummary(summary: string): void {
     ErrorBoundary.wrap(async () => {
       const popup = this.getOrCreatePopup();
-      const closeButton = popup.querySelector('.close-button');
-      popup.innerHTML = `
-        <div class="summary-content">${summary}</div>
-      `;
+      const copyButton = popup.querySelector('.copy-button');
+      const copyFeedback = popup.querySelector('.copy-feedback');
       
-      if (closeButton) {
-        popup.insertBefore(closeButton, popup.firstChild);
+      popup.insertAdjacentHTML('beforeend', `
+        <div class="summary-content">${summary}</div>
+      `);
+
+      if (copyButton && copyFeedback) {
+        copyButton.addEventListener('click', () => {
+          navigator.clipboard.writeText(summary).then(() => {
+            copyFeedback.textContent = 'Copied!';
+            copyButton.classList.add('copied');
+            setTimeout(() => {
+              copyFeedback.textContent = '';
+              copyButton.classList.remove('copied');
+            }, 2000);
+          });
+        });
       }
       
       document.body.appendChild(popup);
@@ -120,14 +142,14 @@ class ContentScript extends Disposable {
   private showLoader(): void {
     ErrorBoundary.wrap(async () => {
       const popup = this.getOrCreatePopup();
-      const closeButton = popup.querySelector('.close-button');
-      popup.innerHTML = `
-        <div class="loader">Summarizing...</div>
-      `;
-      
-      if (closeButton) {
-        popup.insertBefore(closeButton, popup.firstChild);
+      const copyButton = popup.querySelector('.copy-button');
+      if (copyButton && copyButton instanceof HTMLElement) {
+        copyButton.style.display = 'none';
       }
+      
+      popup.insertAdjacentHTML('beforeend', `
+        <div class="loader">Summarizing...</div>
+      `);
       
       document.body.appendChild(popup);
     });
