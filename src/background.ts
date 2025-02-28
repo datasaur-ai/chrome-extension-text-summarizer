@@ -108,12 +108,17 @@ class SummaryService extends Disposable {
           const timeoutId = setTimeout(() => controller.abort(), 30000);
           const sanitizedPrompt = Validator.sanitizeInput(prompt);
           
+          // Add source parameters to URL
+          const url = new URL(apiUrl);
+          url.searchParams.set('source', 'CHROME_EXTENSION');
+          url.searchParams.set('sourceId', chrome.runtime.id);
+
           const response = await RetryStrategy.execute(async () => {
-            const res = await fetch(apiUrl, {
+            const res = await fetch(url.toString(), {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${apiKey}`,
+                'Authorization': `Bearer ${apiKey}`,
               },
               body: JSON.stringify({
                 messages: [
