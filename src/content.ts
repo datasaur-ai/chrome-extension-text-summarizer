@@ -178,6 +178,6 @@ class ContentScript extends Disposable {
 const script = new ContentScript();
 
 // Cleanup on window unload
-window.addEventListener('unload', () => {
+window.addEventListener('beforeunload', () => {
   script.dispose();
-});
+}, { capture: true });

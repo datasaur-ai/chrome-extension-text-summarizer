@@ -25,6 +25,7 @@ const config = (_env: { [key: string]: string }, argv: { mode: string }): webpac
       path: path.resolve(__dirname, 'dist'),
       filename: '[name].js',
       clean: true,
+      publicPath: '/',
     },
     devtool: isDevelopment ? 'inline-source-map' : false,
     module: {
