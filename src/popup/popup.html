@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Summarizer Settings</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Text Summarizer Settings</h1>
+    <form id="settingsForm">
+      <div class="form-group">
+        <label for="apiUrl">API URL</label>
+        <input type="url" id="apiUrl" name="apiUrl" required>
+      </div>
+      <div class="form-group">
+        <label for="apiKey">API Key</label>
+        <input type="password" id="apiKey" name="apiKey" required>
+      </div>
+      <div class="form-group">
+        <label for="promptTemplate">Prompt Template</label>
+        <textarea id="promptTemplate" name="promptTemplate" rows="3" required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit">Save Settings</button>
+      </div>
+    </form>
+    <div id="status" class="status"></div>
+  </div>
+</body>
+</html>

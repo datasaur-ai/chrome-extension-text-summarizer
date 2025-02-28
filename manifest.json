@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Text Summarizer",
+  "version": "1.0.0",
+  "description": "Chrome extension for text summarization",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/datasaur_128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "images/datasaur_16.png",
+    "32": "images/datasaur_32.png",
+    "64": "images/datasaur_64.png",
+    "128": "images/datasaur_128.png"
+  }
+} 
