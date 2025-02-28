@@ -5,7 +5,7 @@ export class Logger {
   private readonly isDevelopment: boolean;
 
   private constructor() {
-    this.isDevelopment = process.env.NODE_ENV === 'development';
+    this.isDevelopment = process.env['NODE_ENV'] === 'development';
   }
 
   public static getInstance(): Logger {
