@@ -5,13 +5,11 @@
   "description": "Chrome extension for text summarization",
   "permissions": [
     "activeTab",
-    "scripting",
     "storage",
     "contextMenus"
   ],
   "host_permissions": [
-    "https://development.datasaur.ai/api/deployment/*",
-    "https://llm.datasaur.ai/api/deployment/*"
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -20,8 +18,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://development.datasaur.ai/api/deployment/*",
-        "https://llm.datasaur.ai/api/deployment/*"
+        "<all_urls>"
       ],
       "css": ["content.css"],
       "js": ["content.js"]
